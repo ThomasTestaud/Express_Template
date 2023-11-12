@@ -27,6 +27,10 @@ const User = sequelizeInstance.define('User', {
             this.setDataValue('password', bcrypt.hashSync(value, 12));
         },
     },
+    role: {
+        type: DataTypes.ENUM('admin', 'user'),
+        defaultValue: 'user',
+    },
 }, {
     indexes: [
         {unique: true, fields: ['email']},

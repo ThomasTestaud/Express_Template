@@ -74,7 +74,6 @@ router.get('/', function (req, res, next) {
 
 router.patch('/', function (req, res, next) {
 
-  res.json(req.user);
   const data = { username, email, password } = req.body;
 
   User.update(data, {
