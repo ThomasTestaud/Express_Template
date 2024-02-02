@@ -1,4 +1,4 @@
-const sequelizeInstance = require('./__sequelize.js');
+const sequelizeInstance = require('./_model.js');
 const User = require('./user.js');
 
 //Relations

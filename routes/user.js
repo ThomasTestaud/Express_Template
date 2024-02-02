@@ -3,7 +3,7 @@ const router = express.Router();
 const { Op } = require('sequelize');
 const JWT = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { User } = require('../models/_models');
+const { User } = require('../models/index.js');
 const auth = require('../middlewares/authorization.js');
 
 
@@ -51,7 +51,7 @@ router.post('/login', function (req, res, next) {
           res.json('false');
         } else {
           res.json({
-            "token": JWT.sign({ id: user.id }, secret, { expiresIn: '1d' }),
+            "token": JWT.sign({ id: user.id }, secret, { expiresIn: '2d' }),
           });
         }
       })
@@ -74,17 +74,33 @@ router.get('/', function (req, res, next) {
 
 router.patch('/', function (req, res, next) {
 
-  const data = { username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-  User.update(data, {
+  User.update({ username, email, password }, {
     where: {
       id: req.user.id
     }
   }).then(() => {
     res.json('User updated');
   }).catch((error) => {
-    res.status(500);
-    res.json('error on updating user: ' + error);
+    //If the error is a SequelizeUniqueConstraintError
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      res.status(409);
+      res.json('username or email already in use');
+    } else {
+      res.status(500);
+      res.json('error on updating user: ' + error);
+    }
+  });
+
+});
+
+router.get('/refresh-token', function (req, res, next) {
+
+  const secret = process.env.JWT_SECRET;
+
+  res.json({
+    "token": JWT.sign({ id: req.user.id }, secret, { expiresIn: '2d' }),
   });
 
 });

@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelizeInstance = require('./__sequelize.js');
+const sequelizeInstance = require('./_model.js');
 const bcrypt = require('bcrypt');
 
 
